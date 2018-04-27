@@ -27,4 +27,9 @@ public class DataService {
         return dataRepository.save(data);
     }
 
+    @Transactional
+    public void deleteAll() {
+        dataRepository.deleteAll();
+    }
+
 }

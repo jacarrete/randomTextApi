@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
@@ -15,13 +16,14 @@ import java.util.function.Supplier;
 /**
  * Created by jcarretero on 26/04/2018.
  */
+@Service("calculateData")
 public class CalculateData implements Supplier<StatusData> {
 
     private int number;
     private int wCountMin;
     private int wCountMax;
 
-    public CalculateData(int number, int wCountMin, int wCountMax) {
+    public void setCalculateData(int number, int wCountMin, int wCountMax) {
         this.number = number;
         this.wCountMin = wCountMin;
         this.wCountMax = wCountMax;

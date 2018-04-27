@@ -1,8 +1,11 @@
 package com.betvictor.service;
 
-import com.betvictor.helper.CalculateData;
 import com.betvictor.dto.StatusData;
+import com.betvictor.helper.CalculateData;
 import com.betvictor.model.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,13 +24,18 @@ import java.util.concurrent.ExecutionException;
 @Service("textService")
 public class TextService {
 
+    private static final Logger log = LoggerFactory.getLogger(TextService.class);
+
+    @Autowired
+    private CalculateData calculateData;
+
     public Data generateRandomText(int pStart, int pEnd, int wCountMin, int wCountMax) {
         Collection<StatusData> results = new ConcurrentLinkedQueue<>();
-        CompletableFuture<?>[] allFutures = new CompletableFuture[pEnd+1-pStart];
+        CompletableFuture<?>[] allFutures = new CompletableFuture[pEnd-pStart];
         int index = 0;
-        for (int i=pStart; i<=pEnd; i++) {
-            int temp = i;
-            CompletableFuture<StatusData> future = CompletableFuture.supplyAsync(() -> new CalculateData(temp, wCountMin, wCountMax).get());
+        for (int i=pStart; i<pEnd; i++) {
+            calculateData.setCalculateData(i, wCountMin, wCountMax);
+            CompletableFuture<StatusData> future = CompletableFuture.supplyAsync(calculateData);
             allFutures[index] = future.thenAccept(results::add);
             index++;
         }
@@ -35,7 +43,7 @@ public class TextService {
         try {
             combinedFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            log.error("Exception");
         }
         return getFinalData(results);
     }
@@ -47,27 +55,25 @@ public class TextService {
         List<Long> paragraphProcessingTimes = new ArrayList<>();
 
         for (StatusData sd : statusDataList) {
-            words = populateMap(sd.getWords());
+            for (Map.Entry<String, Integer> entry : sd.getWords().entrySet()) {
+                String word = entry.getKey();
+                words.put(word, words.containsKey(word) ? words.get(word) + 1 : entry.getValue());
+            }
             paragraphSizes.addAll(sd.getParagraphSizes());
             paragraphProcessingTimes.addAll(sd.getParagraphProcessingTimes());
         }
-        data.setFreqWord(Collections.max(words.entrySet(), Map.Entry.comparingByValue()).getKey());
+        data.setFreqWord(words.size()!=0 ? Collections.max(words.entrySet(), Map.Entry.comparingByValue()).getKey() : "");
         data.setAvgParagraphSize(calculateAverage(paragraphSizes));
         data.setAvgParagraphProcessingTime(calculateAverage(paragraphProcessingTimes)/1000000);
+        data.setTotalProcessingTime(0L);
         return data;
-    }
-
-    private Map<String, Integer> populateMap(Map<String, Integer> words) {
-        Map<String, Integer> aux = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : words.entrySet()) {
-            String word = entry.getKey();
-            aux.put(word, aux.containsKey(word) ? aux.get(word) + 1 : entry.getValue());
-        }
-        return aux;
     }
 
     private double calculateAverage(List<?> values) {
         double sum = 0;
+        if (values.isEmpty()) {
+            return 0;
+        }
         for (Object object : values) {
             double value = object instanceof Integer ? ((Integer)object).doubleValue() : ((Long)object).doubleValue();
             sum = sum + value;

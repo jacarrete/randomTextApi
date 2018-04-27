@@ -30,14 +30,6 @@ public class Data {
         this.totalProcessingTime = totalProcessingTime;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getFreqWord() {
         return freqWord;
     }
@@ -79,5 +71,31 @@ public class Data {
                 ", avgParagraphProcessingTime=" + avgParagraphProcessingTime +
                 ", totalProcessingTime=" + totalProcessingTime +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Data data = (Data) o;
+
+        if (id != null ? !id.equals(data.id) : data.id != null) return false;
+        if (freqWord != null ? !freqWord.equals(data.freqWord) : data.freqWord != null) return false;
+        if (avgParagraphSize != null ? !avgParagraphSize.equals(data.avgParagraphSize) : data.avgParagraphSize != null)
+            return false;
+        if (avgParagraphProcessingTime != null ? !avgParagraphProcessingTime.equals(data.avgParagraphProcessingTime) : data.avgParagraphProcessingTime != null)
+            return false;
+        return totalProcessingTime != null ? totalProcessingTime.equals(data.totalProcessingTime) : data.totalProcessingTime == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (freqWord != null ? freqWord.hashCode() : 0);
+        result = 31 * result + (avgParagraphSize != null ? avgParagraphSize.hashCode() : 0);
+        result = 31 * result + (avgParagraphProcessingTime != null ? avgParagraphProcessingTime.hashCode() : 0);
+        result = 31 * result + (totalProcessingTime != null ? totalProcessingTime.hashCode() : 0);
+        return result;
     }
 }
