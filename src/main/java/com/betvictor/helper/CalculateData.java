@@ -1,12 +1,13 @@
 package com.betvictor.helper;
 
 import com.betvictor.dto.StatusData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
@@ -16,12 +17,15 @@ import java.util.function.Supplier;
 /**
  * Created by jcarretero on 26/04/2018.
  */
-@Service("calculateData")
 public class CalculateData implements Supplier<StatusData> {
 
     private int number;
     private int wCountMin;
     private int wCountMax;
+
+    private static final Logger log = LoggerFactory.getLogger(CalculateData.class);
+
+    public CalculateData() {}
 
     public void setCalculateData(int number, int wCountMin, int wCountMax) {
         this.number = number;
@@ -33,6 +37,7 @@ public class CalculateData implements Supplier<StatusData> {
     public StatusData get() {
         RestTemplate restTemplate = new RestTemplate();
         String uri = "http://www.randomtext.me/api/giberish/p-"+number+"/"+wCountMin+"-"+wCountMax;
+        log.info("HTTP GET: " + uri);
         Object response = restTemplate.exchange(uri, HttpMethod.GET, getEntity(), Object.class);
         LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) ((ResponseEntity) response).getBody();
         return calculateData((String) map.get("text_out"));

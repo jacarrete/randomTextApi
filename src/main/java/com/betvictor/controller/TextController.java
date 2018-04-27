@@ -1,5 +1,6 @@
 package com.betvictor.controller;
 
+import com.betvictor.helper.CalculateData;
 import com.betvictor.model.Data;
 import com.betvictor.service.DataService;
 import com.betvictor.service.TextService;
@@ -33,6 +34,7 @@ public class TextController {
 
         //GENERATE DATA
         long startProcessingTime = System.currentTimeMillis();
+        textService.setCalculateData(new CalculateData());
         Data data = textService.generateRandomText(pStart, pEnd, wCountMin, wCountMax);
         data.setTotalProcessingTime(System.currentTimeMillis() - startProcessingTime);
 

@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -49,8 +48,8 @@ public class TextServiceTest {
 
     @Test
     public void generateRandomText() {
-        Mockito.doNothing().when(mockCalculateData).setCalculateData(1,1,1);
         when(mockCalculateData.get()).thenReturn(statusData);
+        textService.setCalculateData(mockCalculateData);
         Data auxData = textService.generateRandomText(1,2,1,1);
         assertEquals(data.toString(), auxData.toString());
         assertEquals(data.hashCode(), auxData.hashCode());
