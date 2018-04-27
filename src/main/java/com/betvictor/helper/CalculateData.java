@@ -35,7 +35,7 @@ public class CalculateData implements Supplier<StatusData> {
     public StatusData get() {
         RestTemplate restTemplate = new RestTemplate();
         String uri = "http://www.randomtext.me/api/giberish/p-"+number+"/"+wCountMin+"-"+wCountMax;
-        log.info("HTTP GET: " + uri);
+        log.info("HTTP GET: {}", uri);
         Object response = restTemplate.exchange(uri, HttpMethod.GET, getEntity(), Object.class);
         LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) ((ResponseEntity) response).getBody();
         return calculateData((String) map.get("text_out"));
