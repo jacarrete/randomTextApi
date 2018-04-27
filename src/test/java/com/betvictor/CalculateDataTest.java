@@ -43,7 +43,7 @@ public class CalculateDataTest {
         String textOut = "<p>Dear until bought a the.</p>\r<p>Within spryly a alongside miraculously.</p>\r";
         Method method = CalculateData.class.getDeclaredMethod("calculateData", String.class);
         method.setAccessible(true);
-        StatusData result = (StatusData) method.invoke(new CalculateData(), textOut);
+        StatusData result = (StatusData) method.invoke(new CalculateData(1,2,3), textOut);
         assertEquals(statusData.getWords().get("a"), result.getWords().get("a"));
         assertEquals(statusData.getWords().get("alongside"), result.getWords().get("alongside"));
         assertEquals(statusData.getWords().get("Dear"), result.getWords().get("Dear"));
@@ -73,7 +73,7 @@ public class CalculateDataTest {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-        assertEquals(entity, method.invoke(new CalculateData()));
+        assertEquals(entity, method.invoke(new CalculateData(1,2,3)));
     }
 
 }

@@ -5,7 +5,6 @@ import com.betvictor.helper.CalculateData;
 import com.betvictor.model.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,16 +25,12 @@ public class TextService {
 
     private static final Logger log = LoggerFactory.getLogger(TextService.class);
 
-    @Autowired
-    private CalculateData calculateData;
-
     public Data generateRandomText(int pStart, int pEnd, int wCountMin, int wCountMax) {
         Collection<StatusData> results = new ConcurrentLinkedQueue<>();
         CompletableFuture<?>[] allFutures = new CompletableFuture[pEnd-pStart];
         int index = 0;
         for (int i=pStart; i<pEnd; i++) {
-            calculateData.setCalculateData(i, wCountMin, wCountMax);
-            CompletableFuture<StatusData> future = CompletableFuture.supplyAsync(calculateData);
+            CompletableFuture<StatusData> future = CompletableFuture.supplyAsync(new CalculateData(i, wCountMin, wCountMax));
             allFutures[index] = future.thenAccept(results::add);
             index++;
         }
@@ -43,7 +38,7 @@ public class TextService {
         try {
             combinedFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-            log.error("Exception");
+            log.error(e.toString());
         }
         return getFinalData(results);
     }

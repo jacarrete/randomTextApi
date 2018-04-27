@@ -44,6 +44,7 @@ public class DataServiceTest {
         List<Data> result = dataService.getAllData();
         for (int i=0; i<result.size(); i++) {
             assert result.get(i).equals(dataList.get(i));
+            assert result.get(i).hashCode() == dataList.get(i).hashCode();
         }
     }
 }
