@@ -25,19 +25,12 @@ public class TextService {
 
     private static final Logger log = LoggerFactory.getLogger(TextService.class);
 
-    private CalculateData calculateData;
-
-    public void setCalculateData(CalculateData calculateData) {
-        this.calculateData = calculateData;
-    }
-
     public Data generateRandomText(int pStart, int pEnd, int wCountMin, int wCountMax) {
         Collection<StatusData> results = new ConcurrentLinkedQueue<>();
         CompletableFuture<?>[] allFutures = new CompletableFuture[pEnd-pStart];
         int index = 0;
         for (int i=pStart; i<pEnd; i++) {
-            calculateData.setCalculateData(i, wCountMin, wCountMax);
-            CompletableFuture<StatusData> future = CompletableFuture.supplyAsync(calculateData);
+            CompletableFuture<StatusData> future = CompletableFuture.supplyAsync(new CalculateData(i, wCountMin, wCountMax));
             allFutures[index] = future.thenAccept(results::add);
             index++;
         }

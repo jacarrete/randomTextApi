@@ -25,9 +25,7 @@ public class CalculateData implements Supplier<StatusData> {
 
     private static final Logger log = LoggerFactory.getLogger(CalculateData.class);
 
-    public CalculateData() {}
-
-    public void setCalculateData(int number, int wCountMin, int wCountMax) {
+    public CalculateData(int number, int wCountMin, int wCountMax) {
         this.number = number;
         this.wCountMin = wCountMin;
         this.wCountMax = wCountMax;
