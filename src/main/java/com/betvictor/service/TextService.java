@@ -52,7 +52,7 @@ public class TextService {
         for (StatusData sd : statusDataList) {
             for (Map.Entry<String, Integer> entry : sd.getWords().entrySet()) {
                 String word = entry.getKey();
-                words.put(word, words.containsKey(word) ? words.get(word) + 1 : entry.getValue());
+                words.compute(word, (tokenKey, oldValue) -> oldValue == null ? 1 : oldValue + 1);
             }
             paragraphSizes.addAll(sd.getParagraphSizes());
             paragraphProcessingTimes.addAll(sd.getParagraphProcessingTimes());
